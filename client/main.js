@@ -21,6 +21,26 @@ main = (function(main) {
   document.addEventListener('gitter-sidecar-ready', function(e) {
     main.chat.GitterChat = e.detail.Chat;
 
+    function addCopyButtons(clsPost) {
+      var type = window.common.challengeType,
+          basejump = window.common.challengeTypes.BASEJUMP,
+          zipline = window.common.challengeTypes.ZIPLINE;
+      if (type !== basejump && type !== zipline) {
+        var className = '#chat-embed-' +
+        clsPost + ' > .gitter-chat-embed-action-bar .chat-embed-main-title';
+        $(className).after(
+          '<div class="btn-group">' +
+          '<a class="btn btn-sm btn-primary btn-clipboard" ' +
+          'title="Copy Solution as Gitter Link">' +
+            '<i class="fa fa-link"></i> Copy as Link</a>' +
+          '<a class="btn btn-sm btn-primary btn-clipboard" ' +
+          'title="Copy Solution as Gitter Formatted code">' +
+            '<i class="fa fa-clipboard"></i> Copy as Code</a>' +
+          '</div>'
+        );
+      }
+    }
+
     main.chat.createHelpChat = function(room, helpChatBtnClass, roomTitle) {
       // room is always in PascalCase
       roomTitle = room
@@ -61,6 +81,8 @@ main = (function(main) {
               '</span>' +
             '</div>'
           );
+
+          addCopyButtons('help');
         }
 
         if (shouldButtonBePressed) {
@@ -92,6 +114,8 @@ main = (function(main) {
           '<span>Free Code Camp\'s Main Chat</span>' +
         '</div>'
       );
+
+      addCopyButtons('main');
     });
 
 

@@ -3,6 +3,7 @@ window.common = (function(global) {
     Rx: { Subject, Observable },
     CodeMirror,
     emmetCodeMirror,
+    Clipboard,
     common = { init: [] }
   } = global;
 
@@ -36,6 +37,32 @@ window.common = (function(global) {
     }
   );
 
+  var clipboard = new Clipboard('.btn-clipboard', {
+    text: function(trigger) {
+      var type;
+      switch (common.challengeType) {
+        case common.challengeTypes.HTML:
+          type = 'html';
+          break;
+        case common.challengeTypes.JS:
+        case common.challengeTypes.BONFIRE:
+          type = 'javascript';
+          break;
+        default:
+          type = '';
+      }
+
+      if (trigger.title === 'Copy Solution as Gitter Link') {
+        return '[Challenge - ' + common.challengeName +
+        (common.username ? ' (' + common.username + '\'s Solution)' : '')
+        + '](' + window.location + ')';
+      } else {
+        return '```' + type + '\n' + editor.getValue() + '\n```';
+      }
+    }
+  });
+
+  common.clipboard = clipboard;
   editor.setSize('100%', 'auto');
 
   common.editorExecute$ = new Subject();
