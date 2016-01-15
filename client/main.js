@@ -167,12 +167,14 @@ $(document).ready(function() {
   CodeMirror = window.common.CodeMirror,
   editor = window.common.editor,
   copyButton = `<a id="demo" href="/" data-toggle="popover" \
-data-trigger="manual" title="<a class='demo1' id='markdown' \
-href='/' data-toggle='popover' data-trigger='manual' \
+data-trigger="manual" data-content="<a class='demo1' id='link' href='/' \
+data-toggle='popover' data-trigger='manual' \
+title='Copy the link to this challenge'>Copy Link</a><br><a class='demo1' \
+id='markdown' href='/' data-toggle='popover'\ data-trigger='manual' \
 title='Copy the contents of code editor with Markdown syntax \
-highlighting'>Copy markdown</a>" data-content="<a class='demo1' \
-id='plain' href='/' data-toggle='popover' data-trigger='manual' \
-title='Copy the contents of code editor'>Copy plain code</a>"></a>`;
+highlighting'>Copy as Pretty Code</a><br><a class='demo1' id='plain' \
+href='/' data-toggle='popover' data-trigger='manual' title='Copy the \
+contents of code editor'>Copy as Plain Code</a>"></a>`;
 
   var left, top;
   $(document).mousemove(function(event) {
@@ -184,7 +186,18 @@ title='Copy the contents of code editor'>Copy plain code</a>"></a>`;
     setTimeout(function() {
       if (editor.somethingSelected()) {
         $('#demo').popover('show');
-        var theHeight = $('.popover').height();
+        var editorOffset = $('#mainEditorPanel > form.code').offset(),
+        editorHeight = $('#mainEditorPanel > form.code').height(),
+        editorWidth = $('#mainEditorPanel > form.code').width(),
+        theHeight = $('.popover').height();
+        if (left < editorOffset.left
+        || left > editorOffset.left + editorWidth) {
+          left = (editorOffset.left + editorWidth) / 2;
+        }
+        if (top < editorOffset.top
+        || top > editorOffset.top + editorHeight) {
+          top = (editorOffset.top + editorHeight) / 2;
+        }
         $('.popover').css('left', (left + 10) + 'px');
         $('.popover').css('top', (top - (theHeight / 2)) + 'px');
       }

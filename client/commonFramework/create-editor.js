@@ -57,10 +57,15 @@ window.common = (function(global) {
         returnValue = '```' + type + '\n' + editor.getSelection() + '\n```';
         editor.replaceSelection(editor.getSelection());
         return returnValue;
-      } else {
+      } else if (trigger.id === 'plain') {
         returnValue = editor.getSelection();
         editor.replaceSelection(editor.getSelection());
         return returnValue;
+      } else if (trigger.id === 'link') {
+        editor.replaceSelection(editor.getSelection());
+        return '[Challenge - ' + common.challengeName +
+        (common.username ? ' (' + common.username + '\'s solution)' : '')
+        + '](' + window.location + ')';
       }
     }
   });
