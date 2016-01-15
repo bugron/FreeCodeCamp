@@ -21,26 +21,6 @@ main = (function(main) {
   document.addEventListener('gitter-sidecar-ready', function(e) {
     main.chat.GitterChat = e.detail.Chat;
 
-    function addCopyButtons(clsPost) {
-      var type = window.common.challengeType,
-          basejump = window.common.challengeTypes.BASEJUMP,
-          zipline = window.common.challengeTypes.ZIPLINE;
-      if (type !== basejump && type !== zipline) {
-        var className = '#chat-embed-' +
-        clsPost + ' > .gitter-chat-embed-action-bar .chat-embed-main-title';
-        $(className).after(
-          '<div class="btn-group">' +
-          '<a class="btn btn-sm btn-primary btn-clipboard" ' +
-          'title="Copy Solution as Gitter Link">' +
-            '<i class="fa fa-link"></i> Copy as Link</a>' +
-          '<a class="btn btn-sm btn-primary btn-clipboard" ' +
-          'title="Copy Solution as Gitter Formatted code">' +
-            '<i class="fa fa-clipboard"></i> Copy as Code</a>' +
-          '</div>'
-        );
-      }
-    }
-
     main.chat.createHelpChat = function(room, helpChatBtnClass, roomTitle) {
       // room is always in PascalCase
       roomTitle = room
@@ -81,8 +61,6 @@ main = (function(main) {
               '</span>' +
             '</div>'
           );
-
-          addCopyButtons('help');
         }
 
         if (shouldButtonBePressed) {
@@ -114,8 +92,6 @@ main = (function(main) {
           '<span>Free Code Camp\'s Main Chat</span>' +
         '</div>'
       );
-
-      addCopyButtons('main');
     });
 
 
@@ -184,6 +160,60 @@ $(document).ready(function() {
         'https://s3.amazonaws.com/freecodecamp/camper-image-placeholder.png'
       );
   });
+
+  var type = window.common.challengeType,
+  basejump = window.common.challengeTypes.BASEJUMP,
+  zipline = window.common.challengeTypes.ZIPLINE,
+  CodeMirror = window.common.CodeMirror,
+  editor = window.common.editor,
+  copyButton = `<a id="demo" href="/" data-toggle="popover" \
+data-trigger="manual" title="<a class='demo1' id='markdown' \
+href='/' data-toggle='popover' data-trigger='manual' \
+title='Copy the contents of code editor with Markdown syntax \
+highlighting'>Copy markdown</a>" data-content="<a class='demo1' \
+id='plain' href='/' data-toggle='popover' data-trigger='manual' \
+title='Copy the contents of code editor'>Copy plain code</a>"></a>`;
+
+  var left, top;
+  $(document).mousemove(function(event) {
+    left = event.pageX;
+    top = event.pageY;
+  });
+
+  function showPopover() {
+    setTimeout(function() {
+      if (editor.somethingSelected()) {
+        $('#demo').popover('show');
+        var theHeight = $('.popover').height();
+        $('.popover').css('left', (left + 10) + 'px');
+        $('.popover').css('top', (top - (theHeight / 2)) + 'px');
+      }
+   }, 100);
+  }
+
+  if (type !== basejump && type !== zipline) {
+
+    $('body').append(copyButton);
+    $('#demo').popover({html: true});
+
+    editor.setOption('extraKeys', {
+      'Ctrl-A': function() {
+        editor.execCommand('selectAll');
+        showPopover();
+      }
+    });
+
+    CodeMirror.on(document, 'mousedown', function() {
+      $('#demo').popover('hide');
+    });
+
+    CodeMirror.on(document, 'mouseup', showPopover);
+
+    $(document).on('click', '.demo1', function(e) {
+      e.preventDefault();
+      $('#demo').popover('hide');
+    });
+  }
 
   function upvoteHandler(e) {
     e.preventDefault();

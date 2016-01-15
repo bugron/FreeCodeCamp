@@ -37,7 +37,7 @@ window.common = (function(global) {
     }
   );
 
-  var clipboard = new Clipboard('.btn-clipboard', {
+  var clipboard = new Clipboard('.demo1', {
     text: function(trigger) {
       var type;
       switch (common.challengeType) {
@@ -52,17 +52,21 @@ window.common = (function(global) {
           type = '';
       }
 
-      if (trigger.title === 'Copy Solution as Gitter Link') {
-        return '[Challenge - ' + common.challengeName +
-        (common.username ? ' (' + common.username + '\'s Solution)' : '')
-        + '](' + window.location + ')';
+      var returnValue = '';
+      if (trigger.id === 'markdown') {
+        returnValue = '```' + type + '\n' + editor.getSelection() + '\n```';
+        editor.replaceSelection(editor.getSelection());
+        return returnValue;
       } else {
-        return '```' + type + '\n' + editor.getValue() + '\n```';
+        returnValue = editor.getSelection();
+        editor.replaceSelection(editor.getSelection());
+        return returnValue;
       }
     }
   });
 
   common.clipboard = clipboard;
+  common.CodeMirror = CodeMirror;
   editor.setSize('100%', 'auto');
 
   common.editorExecute$ = new Subject();
