@@ -29,7 +29,7 @@ block content
                               .button-spacer
                               for challenge in challengeBlock.challenges
                                   if challenge.completed
-                                      p.slightly-faded.text-primary.ion-checkmark-circled.padded-ionic-icon.negative-15(name="#{challenge.dashedName}") &nbsp;&nbsp;&nbsp;
+                                      p.faded.text-primary.ion-checkmark-circled.padded-ionic-icon.negative-15(name="#{challenge.dashedName}") &nbsp;&nbsp;&nbsp;
                                           a(href="/challenges/#{challenge.dashedName}" target='_parent')
                                               = challenge.title
                                               span.sr-only= " Complete"
